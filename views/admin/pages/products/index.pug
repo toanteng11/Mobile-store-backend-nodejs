@@ -33,9 +33,19 @@ block main
     .card.mb-3
         .card-header Danh sách sản phẩm
         .card-body
-            table.table.table-hover.table-sm
+            form(action="${prifixAdmin}/change-multi", method="post", from-change-multi) 
+                .d-flex.align-items-start 
+                    .form-group.mb-0
+                        select(name="action", class="form-control form-control-sm")
+                            option(value="active") Hoạt động
+                            option(value="inactive") Dừng hoạt động
+                    .form-group.mb-0.ml-2
+                           input#(type="text", name="ids",value="", class="form-control form-control-sm d-none" ) //- Input ẩn để chứa ID của các sản phẩm được chọn
+                    button(type="submit", class="btn btn-sm btn-primary ml-2") Áp dụng
+            table (class="table table-bordered table-hover mt-3", checkbox-multi)//- Thêm id cho table để dễ dàng thao tác với JavaScript
                 thead
                     tr 
+                        input#(type="checkbox", name="checkAll")//- Checkbox để chọn tất cả
                         th STT
                         th Hình ảnh 
                         th Tiêu đề
@@ -43,10 +53,11 @@ block main
                         th Trạng thái
                         th Hoạt động 
                 tbody
+                    
                     //- Lấy thêm biến index để làm số thứ tự (STT)
                     each item, index in products
                         tr
-                            //- STT tăng dần từ 1 (index bắt đầu từ 0)
+                            input#(type="checkbox", name="selectedProducts", value=item._id)//- Checkbox để chọn sản phẩm
                             td #{index + 1}
                             td 
                                 img(

@@ -63,25 +63,41 @@ module.exports.index = async (req, res) => {
     }
 
     objectPagination.skip = (objectPagination.currentPage - 1) * objectPagination.limitedItems;
-    const Products = await Product.find(find).skip(objectPagination.skip).limit(objectPagination.limitedItems);
+    const products = await Product.find(find).skip(objectPagination.skip).limit(objectPagination.limitedItems);
     const countProducts = await Product.countDocuments(find);
     console.log(countProducts);
     const totalPage = Math.ceil(countProducts / objectPagination.limitedItems);
     objectPagination.totalpage = totalPage;
     console.log(totalPage);
 
-
-
-
-    // phân trang 
-
-
-    const products = await Product.find(find);
     res.render("admin/pages/products/index", {
         pageTitle: "Trang danh sach san pham",
-        products: products,// truyền data ra ngoài giao dien 
+        products: products,
         filterStatus: filterStatus,
         keyword : keyword,
         pagination: objectPagination
     });
-};  
+};
+
+module.exports.changeStatus = async (req, res) => {
+    const status = req.params.status;
+    const id = req.params.id;
+    await Product.updateOne({_id: id}, {status: status});
+    res.redirect("back");
+};
+
+module.exports.changeMulti = async (req, res) => {
+    const type = req.body.type;
+    const ids = req.body.ids.split(",").map(id => id.trim());
+    switch (type) {
+        case "active":
+            await Product.updateMany({_id: {$in: ids}}, {status: "active"});
+            break;
+        case "inactive":
+            await Product.updateMany({_id: {$in: ids}}, {status: "inactive"});
+            break;
+        default:
+            break;
+    }
+    res.redirect("back");   
+};
