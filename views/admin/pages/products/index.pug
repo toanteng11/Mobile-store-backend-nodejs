@@ -1,0 +1,79 @@
+extends ../../layout/default.pug
+
+block main 
+    h1 Danh sách sản phẩm 
+
+    .card.mb-3
+        .card-header Bộ lọc và tiềm kiếm 
+        .card-body
+            .row
+                .col-6
+                    each item in filterStatus
+                        button(
+                            class=`btn btn-sm ml-1 btn-outline-success  ${item.class}`
+                            button-status=item.status
+                        ) #{item.name}
+
+                .col-6
+                    form(id ="form-search")
+                            .input-group
+                                    input(
+                                        type ="text"
+                                        placeholder ="Nhap tu khoa "
+                                        name ="keyword"
+                                        class="form-control"
+                                        value =keyword
+                                    )
+                                    .input-group-append 
+                                    button(
+                                        class ="btn btn-success"
+                                        type="submit"
+                                    ) tim
+           
+    .card.mb-3
+        .card-header Danh sách sản phẩm
+        .card-body
+            table.table.table-hover.table-sm
+                thead
+                    tr 
+                        th STT
+                        th Hình ảnh 
+                        th Tiêu đề
+                        th Giá 
+                        th Trạng thái
+                        th Hoạt động 
+                tbody
+                    //- Lấy thêm biến index để làm số thứ tự (STT)
+                    each item, index in products
+                        tr
+                            //- STT tăng dần từ 1 (index bắt đầu từ 0)
+                            td #{index + 1}
+                            td 
+                                img(
+                                    src=item.thumbnail 
+                                    alt=item.title
+                                    width="100px"
+                                    height="auto"
+                                )
+                            //- Hiển thị tên sản phẩm từ dữ liệu
+                            td #{item.title}
+                            //- Hiển thị giá
+                            td #{item.price}$
+                            td 
+                                //- Kiểm tra trạng thái để hiển thị badge xanh hoặc đỏ
+                                if item.status == 'active'
+                                    a(href='#' class="badge badge-success") Hoạt động
+                                else
+                                    a(href='#' class="badge badge-danger") Dừng hoạt động
+                            td 
+                                button(class='btn btn-warning btn-sm') Sửa 
+                                button(class='btn btn-danger btn-sm ml-1') Xóa
+    
+    nav
+        ul(class="pagination")
+            for ( var i = 1; i <= objectPagination.totalPages; i++)
+            li(class=`page-item `)
+                button(class"= `page-link ${i === objectPagination.currentPage ? 'active' : ''}` data-page=i) #{i}
+
+           
+                            
