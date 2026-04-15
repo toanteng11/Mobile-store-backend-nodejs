@@ -1,4 +1,5 @@
 extends ../../layout/default.pug
+include ../../mixins/form-checkbox-multi.pug
 
 block main 
     h1 Danh sách sản phẩm 
@@ -33,15 +34,7 @@ block main
     .card.mb-3
         .card-header Danh sách sản phẩm
         .card-body
-            form(action="${prifixAdmin}/change-multi", method="post", from-change-multi) 
-                .d-flex.align-items-start 
-                    .form-group.mb-0
-                        select(name="action", class="form-control form-control-sm")
-                            option(value="active") Hoạt động
-                            option(value="inactive") Dừng hoạt động
-                    .form-group.mb-0.ml-2
-                           input#(type="text", name="ids",value="", class="form-control form-control-sm d-none" ) //- Input ẩn để chứa ID của các sản phẩm được chọn
-                    button(type="submit", class="btn btn-sm btn-primary ml-2") Áp dụng
+            +form-checkbox-multi(`${prifixAdmin}/change-multi`)
             table (class="table table-bordered table-hover mt-3", checkbox-multi)//- Thêm id cho table để dễ dàng thao tác với JavaScript
                 thead
                     tr 

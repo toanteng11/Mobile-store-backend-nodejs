@@ -1,0 +1,10 @@
+mixin form-checkbox-multi(path)
+       form(action="path", method="post", from-change-multi) 
+                .d-flex.align-items-start 
+                    .form-group.mb-0
+                        select(name="action", class="form-control form-control-sm")
+                            option(value="active") Hoạt động
+                            option(value="inactive") Dừng hoạt động
+                    .form-group.mb-0.ml-2
+                           input#(type="text", name="ids",value="", class="form-control form-control-sm d-none" ) //- Input ẩn để chứa ID của các sản phẩm được chọn
+                    button(type="submit", class="btn btn-sm btn-primary ml-2") Áp dụng
