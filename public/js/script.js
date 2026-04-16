@@ -69,5 +69,36 @@ if (formChangeMulti) {
         }
     });
 }
+if (inputChecked.length > 0) {
+    let ids = [];
+    const inputids = formChangeMulti.querySelector("input[name='ids']");
+    inputChecked.forEach(input => {
+        if (typeChange === "change-position") {
+            const positionInput = input.closest("tr").querySelector("input[name='position']").value;//- Lấy input vị trí trong cùng một hàng với checkbox
+            ids.push(`${input.value}-${positionInput}`); //- Thêm giá trị của checkbox (ID sản phẩm) và vị trí vào mảng ids, cách nhau bằng dấu gạch ngang
+        }
+        else {
+            ids.push(input.value);
+        }
+    });
+}
+
+// show alert message and auto hide after 5 seconds\
+const showAlert = document.querySelectorAll(".alert");
+if (showAlert.length > 0) {
+    const time = showAlert.getAttribute("data-time") || 5000; //- Lấy thời gian từ thuộc tính data-time, nếu không có thì mặc định là 5000ms (5 giây)`
+    setTimeout(() => {
+        showAlert.classList.add("alert-hidden"); //- Thêm lớp "alert-hidden" để ẩn thông báo sau thời gian đã định
+    }, time);
+    const closeAlert = showAlert.querySelector(".close-alert"); //- Nút đóng thông báo
+    if (closeAlert) {
+        closeAlert.addEventListener("click", () => {
+            showAlert.classList.add("alert-hidden"); //- Thêm lớp "alert-hidden" để ẩn thông báo khi người dùng nhấp vào nút đóng
+        });
+    }
+    
 
 
+}
+
+// show alert message

@@ -1,0 +1,7 @@
+mixin alert-success(time)
+- if (messages.info)
+        .message.info
+           div(
+            data-time = time
+            class ="alert alert-success"
+           )#{messages.info} <span class="close-alert" style="cursor: pointer;">&times;</span>

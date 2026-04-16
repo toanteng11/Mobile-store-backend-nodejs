@@ -27,7 +27,7 @@ module.exports.index = async (req, res) => {
         filterStatus[index].class = "active";
 
     } else {
-         const index = filterStatus.findIndex(item => item.status =="");
+        const index = filterStatus.findIndex(item => item.status == "");
         filterStatus[index].class = "active";
     }
 
@@ -37,7 +37,7 @@ module.exports.index = async (req, res) => {
     let find = {
         deleted: false,
     };
-   
+
     if (req.query.status) {
         find.status = req.query.status;
     }
@@ -45,25 +45,26 @@ module.exports.index = async (req, res) => {
     let keyword = "";
 
     if (req.query.keyword) {
-        keyword =req.query.keyword;
-        const regex = new RegExp(keyword ,"i");
+        keyword = req.query.keyword;
+        const regex = new RegExp(keyword, "i");
         // sử dụng công cụ regex để hiểu rằng đây là một string ng dùng 
         // i ở đây không phân biệt chữ hoa chữ thường
-        
+
         find.title = regex;
     }
+
     // phân trang 
-    let  objectPagination = {
-        currentPage : 1,
-        limitedItems : 4,
-        totalpage : 1,
+    let objectPagination = {
+        currentPage: 1,
+        limitedItems: 4,
+        totalpage: 1,
     };
-    if(req.query.page){
+    if (req.query.page) {
         objectPagination.currentPage = parseInt(req.query.page);
     }
 
     objectPagination.skip = (objectPagination.currentPage - 1) * objectPagination.limitedItems;
-    const products = await Product.find(find).skip(objectPagination.skip).limit(objectPagination.limitedItems);
+    const products = await Product.find(find).sort({ position: "desc" }).skip(objectPagination.skip).limit(objectPagination.limitedItems);
     const countProducts = await Product.countDocuments(find);
     console.log(countProducts);
     const totalPage = Math.ceil(countProducts / objectPagination.limitedItems);
@@ -74,7 +75,7 @@ module.exports.index = async (req, res) => {
         pageTitle: "Trang danh sach san pham",
         products: products,
         filterStatus: filterStatus,
-        keyword : keyword,
+        keyword: keyword,
         pagination: objectPagination
     });
 };
@@ -82,7 +83,8 @@ module.exports.index = async (req, res) => {
 module.exports.changeStatus = async (req, res) => {
     const status = req.params.status;
     const id = req.params.id;
-    await Product.updateOne({_id: id}, {status: status});
+    await Product.updateOne({ _id: id }, { status: status });
+    req.flash("success", "Cập nhật trạng thái thành công");
     res.redirect("back");
 };
 
@@ -91,13 +93,31 @@ module.exports.changeMulti = async (req, res) => {
     const ids = req.body.ids.split(",").map(id => id.trim());
     switch (type) {
         case "active":
-            await Product.updateMany({_id: {$in: ids}}, {status: "active"});
+            await Product.updateMany({ _id: { $in: ids } }, { status: "active" });
+            req.flash("success", "Cập nhật trạng thái thành công");
             break;
         case "inactive":
-            await Product.updateMany({_id: {$in: ids}}, {status: "inactive"});
+            await Product.updateMany({ _id: { $in: ids } }, { status: "inactive" });
+            req.flash("success", "Cập nhật trạng thái thành công");
+            break;
+        case "delete-all":
+            await Product.updateMany({ _id: { $in: ids } }, { deleted: true });
+            req.flash("success", "Xóa tất cả sản phẩm thành công");
+            break;
+        case "delete-selected":
+            await Product.updateMany({ _id: { $in: ids } }, { deleted: true });
+            req.flash("success", "Xóa sản phẩm thành công");
+            break;
+        case "change-position":
+            for(const item of ids){
+                let [id, position] = item.split("-"); //- Tách id và vị trí từ chuỗi "id-position"
+                id = id.trim(); //- Loại bỏ khoảng trắng thừa
+                position = parseInt(position.trim()); //- Chuyển vị trí thành số nguyên
+                await Product.updateOne({ _id: id }, { position: position }); //- Cập nhật vị trí cho sản phẩm có id tương ứng
+            }
             break;
         default:
             break;
     }
-    res.redirect("back");   
+    res.redirect("back");
 };

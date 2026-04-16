@@ -1,8 +1,10 @@
 extends ../../layout/default.pug
 include ../../mixins/form-checkbox-multi.pug
+import alert from "../../mixins/alert.pug"
 
 block main 
     h1 Danh sách sản phẩm 
+    +alert-success(5000)
 
     .card.mb-3
         .card-header Bộ lọc và tiềm kiếm 
@@ -43,6 +45,7 @@ block main
                         th Hình ảnh 
                         th Tiêu đề
                         th Giá 
+                        th Vị trí
                         th Trạng thái
                         th Hoạt động 
                 tbody
@@ -63,6 +66,16 @@ block main
                             td #{item.title}
                             //- Hiển thị giá
                             td #{item.price}$
+                            td 
+                                input(
+                                    type="number"
+                                    name="position"
+                                    value=item.position
+                                    style="width: 60px;"
+                                    class="form-control form-control-sm position-input"
+                                    min = "1"
+                                    data-id=item._id //- Thêm data-id để biết sản phẩm nào đang được cập nhật vị trí
+                                )
                             td 
                                 //- Kiểm tra trạng thái để hiển thị badge xanh hoặc đỏ
                                 if item.status == 'active'
