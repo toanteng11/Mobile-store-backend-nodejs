@@ -1,6 +1,7 @@
 const express = require('express'); // khai bao express
 const bodyParser = require('body-parser'); // khai bao body parser để lấy dữ liệu từ form
 const route = require('./routes/client/index.route'); //  khai báo router 
+const multer = require('multer'); // khai báo multer để upload file
 const adminroute = require('./routes/admin/index.route');
 const cookieParser = require('cookie-parser'); // khai báo cookie parser để sử dụng được flash message trong ứng dụng
 const session = require('express-session'); // khai báo express session để sử dụng được flash message trong ứng dụng

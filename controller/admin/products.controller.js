@@ -121,3 +121,29 @@ module.exports.changeMulti = async (req, res) => {
     }
     res.redirect("back");
 };
+
+module.exports.create = (req, res) => {
+    res.render("admin/pages/products/create", {
+        pageTitle: "Trang tạo mới sản phẩm"
+    });
+};
+
+module.exports.postCreate = async (req, res) => {
+    const data = req.body;
+    req.body.price = parseInt(req.body.price);
+    req.body.discountPercentage = parseInt(req.body.discountPercentage);
+    req.body.stock = parseInt(req.body.stock);
+    if (req.file) {
+        req.body.thumbnail = "/uploads/" + req.file.filename;
+    }
+    if(req.body.position== ""){
+        const countProducts = await Product.count();
+        req.body.position = countProducts + 1;
+    }else{
+        req.body.position = parseInt(req.body.position);
+    }
+    req.body.thumbnail = `/uploads/${req.file.filename}`;
+    req.flash("success", "Tạo mới sản phẩm thành công");
+    res.redirect("/admin/products");
+};
+
