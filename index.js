@@ -14,13 +14,13 @@ database.connect(); // gọi làm hàm connect ở trong file database.js để 
 const systemConfig = require("./config/system")
 
 
-app.use(express.static("public"));// để thư mục public lên giao diện tĩnh 
+app.use(express.static(`${__dirname}/public`)); // sử dụng thư mục public để chứa các file tĩnh như css, js, image
 const app = express(); // khai bao  express 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
  // sử dụng method override để có thể sử dụng được các phương thức put, patch, delete trong form
-app.set("views" , "./views"); // khai báo pug 
+app.set("views" , `${__dirname}/views`); // khai báo thư mục views để chứa các file view của ứng dụng
 app.set("view engine" , "pug"); // khai báo pug
 
 //flash
