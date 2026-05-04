@@ -1,0 +1,77 @@
+extends ../../layout
+
+block content
+  .container-fluid.p-4
+    .row.mb-4
+      .col-12
+        h1.h3 Chỉnh sửa sản phẩm
+
+    .row
+      .col-lg-8
+        .card
+          .card-body
+            form(method='POST' action=`/admin/products/${product._id}?_method=PUT` enctype='multipart/form-data')
+              
+              .mb-3
+                label.form-label Tên sản phẩm
+                input.form-control(
+                  type='text'
+                  name='name'
+                  value=product.name
+                  required
+                )
+
+              .mb-3
+                label.form-label Mô tả
+                textarea.form-control(
+                  name='description'
+                  rows='4'
+                  required
+                )= product.description
+
+              .mb-3
+                label.form-label Giá
+                input.form-control(
+                  type='number'
+                  name='price'
+                  value=product.price
+                  step='0.01'
+                  required
+                )
+
+              .mb-3
+                label.form-label Số lượng
+                input.form-control(
+                  type='number'
+                  name='quantity'
+                  value=product.quantity
+                  required
+                )
+
+              .mb-3
+                label.form-label Danh mục
+                select.form-control(name='category' required)
+                  each cat in categories
+                    option(value=cat._id selected=cat._id.toString()===product.category.toString())= cat.name
+
+              .mb-3
+                label.form-label Hình ảnh
+                input.form-control(type='file' name='image' accept='image/*')
+                if product.image
+                  .mt-2
+                    img.img-thumbnail(src=product.image alt='Product image' style='max-width: 200px;')
+
+              .mb-3
+                label.form-label Trạng thái
+                .form-check
+                  input.form-check-input(
+                    type='checkbox'
+                    name='active'
+                    id='active'
+                    checked=product.active
+                  )
+                  label.form-check-label(for='active') Kích hoạt
+
+              .d-flex.gap-2
+                button.btn.btn-primary(type='submit') Cập nhật
+                a.btn.btn-secondary(href='/admin/products') Hủy

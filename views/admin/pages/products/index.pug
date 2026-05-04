@@ -32,7 +32,29 @@ block main
                                         class ="btn btn-success"
                                         type="submit"
                                     ) tim
-           
+        
+    .card.mb-3
+        .card-header Sap xep va phan trang
+        .card-body
+            .row
+                .col-4 
+                    div(sort)
+                        select(
+
+                            class="form-control form-control-sm"
+                            name="sort"
+                            sort-select
+                        ) 
+                            option(value="position-asc" selected) Vị trí tăng dần
+                            option(value="position-desc") Vị trí giảm dần
+                            option(value="price-asc") Giá tăng dần
+                            option(value="price-desc") Giá giảm dần
+                            option(value="createdAt-asc") Ngày tạo tăng dần
+                            option(value="createdAt-desc") Ngày tạo giảm dần
+                        
+                        button(class="btn btn-danger btn-sm ml-1" ,sort-clear) Xóa bộ lọc
+                        
+                         
     .card.mb-3
         .card-header Danh sách sản phẩm
         .card-body
@@ -85,7 +107,8 @@ block main
                             td 
                                 button(class='btn btn-warning btn-sm') Sửa 
                                 button(class='btn btn-danger btn-sm ml-1') Xóa
-    
+
+
     nav
         ul(class="pagination")
             for ( var i = 1; i <= objectPagination.totalPages; i++)

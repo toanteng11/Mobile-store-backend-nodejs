@@ -1,0 +1,115 @@
+.container.mt-5
+  .row
+    .col-md-12
+      a.btn.btn-secondary.mb-3(href='/admin/products')
+        i.fas.fa-arrow-left
+        |  Quay lại
+
+  .row
+    .col-md-8
+      .card
+        .card-header
+          h3 Chi tiết sản phẩm
+        .card-body
+          .form-group
+            label Tên sản phẩm
+            input.form-control(type='text', value=product.name, disabled)
+          
+          .form-group
+            label Danh mục
+            input.form-control(type='text', value=product.category ? product.category.name : '', disabled)
+          
+          .form-group
+            label Mô tả
+            textarea.form-control(rows='4', disabled)= product.description
+          
+          .form-group
+            label Giá
+            input.form-control(type='number', value=product.price, disabled)
+          
+          .form-group
+            label Giá khuyến mãi
+            input.form-control(type='number', value=product.discountPrice || 0, disabled)
+          
+          .form-group
+            label Số lượng tồn kho
+            input.form-control(type='number', value=product.stock, disabled)
+          
+          .form-group
+            label Trạng thái
+            if product.status === 'active'
+              span.badge.bg-success Hoạt động
+            else
+              span.badge.bg-danger Ngưng hoạt động
+          
+          .form-group
+            label Ngày tạo
+            input.form-control(type='text', value=new Date(product.createdAt).toLocaleString('vi-VN'), disabled)
+          
+          .form-group
+            label Ngày cập nhật
+            input.form-control(type='text', value=new Date(product.updatedAt).toLocaleString('vi-VN'), disabled)
+        
+        .card-footer
+          a.btn.btn-primary(href=`/admin/products/${product._id}/edit`)
+            i.fas.fa-edit
+            |  Chỉnh sửa
+          button.btn.btn-danger.ms-2(type='button', onclick=`deleteProduct('${product._id}')`)
+            i.fas.fa-trash
+            |  Xóa
+
+    .col-md-4
+      .card
+        .card-header
+          h5 Hình ảnh sản phẩm
+        .card-body.text-center
+          if product.image
+            img.img-fluid.mb-3(src=product.image, alt=product.name, style='max-height: 300px; object-fit: cover;')
+          else
+            p.text-muted Không có hình ảnh
+      
+      .card.mt-3
+        .card-header
+          h5 Thông tin thêm
+        .card-body
+          p
+            strong SKU:
+            br
+            | #{product.sku || 'N/A'}
+          p
+            strong Nhà cung cấp:
+            br
+            | #{product.supplier || 'N/A'}
+          p
+            strong Tính năng:
+            br
+            if product.features && product.features.length > 0
+              ul.list-unstyled
+                each feature in product.features
+                  li
+                    i.fas.fa-check.text-success.me-2
+                    | #{feature}
+            else
+              | Không có tính năng nào
+
+script.
+  function deleteProduct(productId) {
+    if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+      fetch(`/admin/products/${productId}`, {
+        method: 'DELETE'
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('Xóa sản phẩm thành công!');
+          window.location.href = '/admin/products';
+        } else {
+          alert('Lỗi: ' + data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Có lỗi xảy ra khi xóa sản phẩm!');
+      });
+    }
+  }

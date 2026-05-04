@@ -102,3 +102,38 @@ if (showAlert.length > 0) {
 }
 
 // show alert message
+
+// sort
+const sort = document.querySelector("[sort]");
+if (sort) {
+    const sortSelect = sort.querySelector("sort-select"); //- Lấy phần tử select để chọn tiêu chí sắp xếp
+    const sortClear = sort.querySelector("sort-clear"); //- Lấy phần tử để xóa tiêu chí sắp xếp
+    // Xử lý sự kiện khi người dùng chọn một tiêu chí sắp xếp
+    sortSelect.addEventListener("change", function (e) {
+        const sortKey = this.value; //- Lấy giá trị của tiêu chí sắp xếp được chọn
+        const sortValue = this.options[this.selectedIndex].getAttribute("data-sort-value");
+        let url = new URL(window.location.href); //- Tạo đối tượng URL từ URL hiện tại của trang
+        url.searchParams.set("sortKey", sortKey);
+        url.searchParams.set("sortValue", sortValue);
+        window.location.href = url; //- Chuyển hướng đến URL mới với tiêu chí sắp xếp đã được thêm vào
+
+    });
+    // Xử lý sự kiện khi người dùng nhấp vào phần tử để xóa tiêu chí sắp xếp
+    sortClear.addEventListener("click", function () {
+        let url = new URL(window.location.href); //- Tạo đối tượng URL từ URL hiện tại của trang
+        url.searchParams.delete("sortKey"); //- Xóa tham số sortKey khỏi URL
+        url.searchParams.delete("sortValue"); //- Xóa tham số sortValue khỏi URL
+        window.location.href = url; //- Chuyển hướng đến URL mới sau khi đã xóa tiêu chí sắp xếp
+    });
+    // them selected the option in select when load page
+    const sortKey = new URLSearchParams(window.location.search).get("sortKey"); //- Lấy giá trị của tham số sortKey từ URL
+    const sortValue = new URLSearchParams(window.location.search).get("sortValue"); //- Lấy giá trị của tham số sortValue từ URL
+    if (sortKey && sortValue) {
+        const optionToSelect = sortSelect.querySelector(`option[value="${sortKey}"][data-sort-value="${sortValue}"]`); //- Tìm phần tử option trong select có giá trị và thuộc tính data-sort-value khớp với sortKey và sortValue
+        if (optionToSelect) {
+            optionToSelect.selected = true; //- Đánh dấu phần tử option đó là đã được chọn
+        }
+    }
+}
+
+// sort

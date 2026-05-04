@@ -52,6 +52,17 @@ module.exports.index = async (req, res) => {
 
         find.title = regex;
     }
+    //sort
+    let sort ={};
+    if(req.query.sortKey && req.query.sortValue){
+        sort[req.query.sortKey] = req.query.sortValue;
+    }
+    else
+    {
+        sort = { position: "desc" };
+    }
+
+    //sort 
 
     // phân trang 
     let objectPagination = {
@@ -64,7 +75,7 @@ module.exports.index = async (req, res) => {
     }
 
     objectPagination.skip = (objectPagination.currentPage - 1) * objectPagination.limitedItems;
-    const products = await Product.find(find).sort({ position: "desc" }).skip(objectPagination.skip).limit(objectPagination.limitedItems);
+    const products = await Product.find(find).sort({sort}).skip(objectPagination.skip).limit(objectPagination.limitedItems);
     const countProducts = await Product.countDocuments(find);
     console.log(countProducts);
     const totalPage = Math.ceil(countProducts / objectPagination.limitedItems);
@@ -142,8 +153,20 @@ module.exports.postCreate = async (req, res) => {
     }else{
         req.body.position = parseInt(req.body.position);
     }
-    req.body.thumbnail = `/uploads/${req.file.filename}`;
+    
     req.flash("success", "Tạo mới sản phẩm thành công");
     res.redirect("/admin/products");
 };
+module.exports.index = async (req, res) => {
+    const products = await Product.find({ deleted: false }).sort({ price: "desc" }).status({ status: "active" });
+    const newProducts = products.map(product => {
+       product.priceNew = product.price - (product.price * product.discountPercentage) / 100;
+       return product.tofixed(0);
+    });
+
+    res.render("admin/pages/products/index", {
+        pageTitle: "Trang danh sach san pham",
+        products: newProducts
+    });
+}
 
